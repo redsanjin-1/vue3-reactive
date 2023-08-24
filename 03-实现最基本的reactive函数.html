@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">sanjin</div>
+  <script>
+    function isObject(value) {
+      return typeof value === 'object' && value !== null;
+    }
+    // 创建响应式对象
+    function reactive(data) {
+      if (!isObject(data)) return
+
+      return new Proxy(data, {
+        get(target, key) {
+          return target[key]
+        },
+        set(target, key, value) {
+          target[key] = value
+          return true
+        }
+      })
+    }
+
+    const state = {
+      name: 'sanjin'
+    }
+    const p = reactive(state)
+    p.name = 'hello'
+    console.log(p.name);
+  </script>
+</body>
+
+</html>

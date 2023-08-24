@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    // 定义一个全局变量，触发者
+    const obj = { name: 'sanjin' }
+
+    // 定义一个函数，引用obj变量，响应者
+    function effect() {
+      // document.querySelector('#app')
+      app.innerHtml = obj.name
+    }
+
+    setTimeout(() => {
+      obj.name = 'hello'
+      // 手动执行effect函数
+      effect()
+    }, 1000);
+  </script>
+</body>
+
+</html>

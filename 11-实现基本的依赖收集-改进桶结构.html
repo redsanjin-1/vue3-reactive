@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">sanjin</div>
+  <script>
+    // 定义一个副作用函数桶
+    const bucket = new Map(); // 修改 [name: Set(fn, fn), age: Set[fn, fn]]
+
+    // 定义一个全局变量，保存当前正在执行的副作用函数
+    let activeEffect;
+
+    function isObject(value) {
+      return typeof value === 'object' && value !== null;
+    }
+    // 创建响应式对象
+    function reactive(data) {
+      if (!isObject(data)) return
+
+      return new Proxy(data, {
+        get(target, key) {
+          if (activeEffect) {
+            let depSet = bucket.get(target)
+            if (!depSet) {
+              depSet = new Set()
+              bucket.set(key, depSet)
+            }
+            depSet.add(activeEffect)
+          }
+          return target[key]
+        },
+        set(target, key, value) {
+          target[key] = value
+          // 从bucket中取出副作用函数，并执行
+          let depSet = bucket.get(key)
+          if (depSet) {
+            depSet.forEach(fn => fn())
+          }
+          return true
+        }
+      })
+    }
+
+    // 注册副作用函数
+    function registerEffect(fn) {
+      if (typeof fn !== 'function') return
+
+      // 保存副作用函数到全局变量中
+      activeEffect = fn
+      // 执行副作用函数
+      fn()
+      // 重置全局变量
+      activeEffect = null;
+    }
+
+    // 定义一个响应式数据：触发者
+    const state = reactive({
+      name: 'sanjin',
+      age: 18
+    })
+
+    // 定义一个副作用函数：响应者
+    function effectName() {
+      console.log("effectName...", state.name);
+    }
+    registerEffect(effectName)
+
+    effectName(() => {
+      console.log("effectAge...", state.age);
+    })
+
+    // 当state发生改变时，执行effect
+    setTimeout(() => {
+      state.name = 'hello'
+    }, 1000);
+  </script>
+</body>
+
+</html>

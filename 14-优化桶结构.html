@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="./reactive-02-优化桶结构.js"></script>
+  <script>
+    /// 1. 创建响应式对象
+    const state = reactive({ name: 'sanjin' })
+    const state2 = reactive({ name: 'hello' })
+
+    // 2. 注册副作用函数
+    effect(() => {
+      console.log("e1执行...", state.name);
+    })
+    effect(() => {
+      console.log("e2执行...", state2.name);
+    })
+
+    setTimeout(() => {
+      // 只修改state的name, 但是state2中的name不会触发副作用函数
+      state.name = 'xiaoming'
+    }, 1000);
+  </script>
+</body>
+
+</html>

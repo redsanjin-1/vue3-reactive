@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    // 定义一个源对象
+    const obj = { name: 'sanjin' }
+
+    // 创建一个代理对象
+    const proxy = new Proxy(obj, {
+      get(target, key) {
+        // 当访问proxy代理对象时，
+        // 就会调用proxy对象的get方法
+        console.log("访问代理对象", target, key);
+        return target[key]
+      },
+      set(target, key, value) {
+        // 当设置proxy代理对象时，
+        // 就会调用proxy对象的set方法
+        console.log("设置代理对象", target, key, value);
+        target[key] = value
+        return true
+      }
+    })
+    console.log([proxy.name]);
+    console.log(proxy.age);
+    proxy.name = 'hello';
+    console.log("源对象", obj);
+    console.log("代理对象", proxy);
+  </script>
+</body>
+
+</html>
